@@ -1,2 +1,6 @@
-*.ipa
-*.zip
+/*
+!/Jarvis/
+!/project.yml
+!/costruisci.yml
+!/.github/
+!/.gitignore
