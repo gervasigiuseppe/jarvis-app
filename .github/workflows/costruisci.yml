@@ -25,6 +25,7 @@ jobs:
             -configuration Release -sdk iphoneos \
             CONFIGURATION_BUILD_DIR="$PWD/uscita" \
             CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            JARVIS_DATA="$(TZ=Europe/Rome date '+%d/%m/%Y %H:%M')" \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             build
 

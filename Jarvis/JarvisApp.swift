@@ -36,7 +36,14 @@ struct PaginaJarvis: UIViewRepresentable {
         let impostazioni = WKWebViewConfiguration()
         impostazioni.allowsInlineMediaPlayback = true
         impostazioni.mediaTypesRequiringUserActionForPlayback = []
-        impostazioni.applicationNameForUserAgent = "JarvisApp/1.1 Mobile/15E148 Safari/604.1"
+        let info = Bundle.main.infoDictionary
+        let versione = (info?["CFBundleShortVersionString"] as? String) ?? "?"
+        let data = ((info?["JarvisAggiornata"] as? String) ?? "").replacingOccurrences(of: "'", with: "")
+        impostazioni.applicationNameForUserAgent = "JarvisApp/\(versione) Mobile/15E148 Safari/604.1"
+        // la pagina mostra in alto la versione dell'app e la data dell'aggiornamento
+        impostazioni.userContentController.addUserScript(WKUserScript(
+            source: "window.JARVIS_APP={versione:'\(versione)',data:'\(data)'};",
+            injectionTime: .atDocumentStart, forMainFrameOnly: true))
         // la pagina chiede all'app di far parlare Jarvis a volume pieno
         impostazioni.userContentController.add(Messaggero(context.coordinator.voce), name: "jarvis")
 
