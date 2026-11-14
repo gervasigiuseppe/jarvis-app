@@ -3,6 +3,10 @@ name: Costruisci Jarvis
 on:
   workflow_dispatch:
   push:
+    branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   costruisci:
@@ -20,6 +24,7 @@ jobs:
           xcodebuild -project Jarvis.xcodeproj -target Jarvis \
             -configuration Release -sdk iphoneos \
             CONFIGURATION_BUILD_DIR="$PWD/uscita" \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             build
 
@@ -28,8 +33,17 @@ jobs:
           mkdir -p Payload
           cp -R uscita/Jarvis.app Payload/
           zip -qry Jarvis.ipa Payload
+          echo '{"versione": ${{ github.run_number }}, "nome": "1.${{ github.run_number }}"}' > versione.json
 
       - uses: actions/upload-artifact@v4
         with:
           name: Jarvis-app
           path: Jarvis.ipa
+
+      - name: Pubblica la nuova versione
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ github.run_number }}" Jarvis.ipa versione.json \
+            --title "Jarvis 1.${{ github.run_number }}" \
+            --notes "Aggiornamento automatico" --latest
