@@ -30,6 +30,8 @@ targets:
         UIBackgroundModes:
           - audio
         NSMicrophoneUsageDescription: "Jarvis usa il microfono per ascoltarLa quando gli parla."
+        NSCameraUsageDescription: "Jarvis usa la fotocamera solo quando Lei scatta una foto da mandargli."
+        NSPhotoLibraryUsageDescription: "Jarvis apre le Sue foto solo quando Lei ne sceglie una da mandargli."
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.gervasi.jarvis
