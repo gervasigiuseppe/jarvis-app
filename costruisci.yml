@@ -1,0 +1,35 @@
+name: Costruisci Jarvis
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  costruisci:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepara il progetto
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Compila l'app
+        run: |
+          xcodebuild -project Jarvis.xcodeproj -target Jarvis \
+            -configuration Release -sdk iphoneos \
+            CONFIGURATION_BUILD_DIR="$PWD/uscita" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Crea il file Jarvis.ipa
+        run: |
+          mkdir -p Payload
+          cp -R uscita/Jarvis.app Payload/
+          zip -qry Jarvis.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Jarvis-app
+          path: Jarvis.ipa
